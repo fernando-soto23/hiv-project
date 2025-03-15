@@ -75,7 +75,7 @@ elif tab == "Main":
 
     # Set the title that appears at the top of the page.
     '''
-    # ⚕️ HIV #NAME OF THE PROJECT"
+    # ⚕️ HIV PROJECT
 
     This is a description of what our project are pretending to solve
     This is a description of what our project are pretending to solve
