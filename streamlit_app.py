@@ -1,163 +1,77 @@
 import streamlit as st
 import pandas as pd
-import math
 from pathlib import Path
-from sections import section1
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-# Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
-    page_title='GDP dashboard',
-    page_icon=':⚕️:', # This is an emoji shortcode. Could be a URL too.
+    page_title='HIV Project Dashboard',
+    page_icon=':⚕️:',
 )
 
-# -----------------------------------------------------------------------------
-# Declare some useful functions.
-
 @st.cache_data
-def get_gdp_data():
-    """Grab GDP data from a CSV file.
+def get_df_data():
+    DATA_FILENAME = Path(__file__).parent / 'data/df_hiv_poverty.csv'
+    df_hiv_poverty = pd.read_csv(DATA_FILENAME)
+    
+    df_hiv_poverty['Year'] = pd.to_numeric(df_hiv_poverty['Year'])
+    
+    return df_hiv_poverty
 
-    This uses caching to avoid having to read the file every time. If we were
-    reading from an HTTP endpoint instead of a file, it's a good idea to set
-    a maximum age to the cache with the TTL argument: @st.cache_data(ttl='1d')
-    """
+# Cargar los datos
+df_hiv_poverty = get_df_data()
 
-    # Instead of a CSV on disk, you could read from an HTTP endpoint here too.
-    DATA_FILENAME = Path(__file__).parent/'data/gdp_data.csv'
-    raw_gdp_df = pd.read_csv(DATA_FILENAME)
+'''
+# ⚕️ HIV PROJECT
 
-    MIN_YEAR = 1960
-    MAX_YEAR = 2022
+This is a description of what our project are pretending to solve
+This is a description of what our project are pretending to solve
+This is a description of what our project are pretending to solve
+This is a description of what our project are pretending to solve
+'''
+''
+''
+# Seleccionar año
+year_option = st.selectbox(
+    'Select Year', 
+    options=[2017, 2018], 
+    index=0  # Puedes poner el año por defecto
+)
 
-    # The data above has columns like:
-    # - Country Name
-    # - Country Code
-    # - [Stuff I don't care about]
-    # - GDP for 1960
-    # - GDP for 1961
-    # - GDP for 1962
-    # - ...
-    # - GDP for 2022
-    #
-    # ...but I want this instead:
-    # - Country Name
-    # - Country Code
-    # - Year
-    # - GDP
-    #
-    # So let's pivot all those year-columns into two: Year and GDP
-    gdp_df = raw_gdp_df.melt(
-        ['Country Code'],
-        [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
-        'Year',
-        'GDP',
-    )
+# Filtrar DataFrame según el año seleccionado
+df_filtered = df_hiv_poverty[df_hiv_poverty['Year'] == year_option]
 
-    # Convert years from string to integers
-    gdp_df['Year'] = pd.to_numeric(gdp_df['Year'])
+def plot_correlation_scatter2(df, x_col, y_col, title, x_label, y_label):
+    # Cambiar el estilo del gráfico de seaborn para tener fondo oscuro
+    sns.set_style("darkgrid", {"axes.facecolor": "black", "grid.color": "#0E1117"})
+    
+    plt.figure(figsize=(8,6))
+    
+    # Graficar el gráfico de dispersión y la línea de regresión
+    sns.regplot(x=df[y_col], y=df[x_col], scatter_kws={"alpha":0.5}, line_kws={"color":"red"})
+    
+    # Cambiar color de los ejes, etiquetas y título
+    plt.xlabel(x_label, color='white')
+    plt.ylabel(y_label, color='white')
+    plt.title(title, color='white')
+    
+    # Cambiar el color de los ticks de los ejes
+    plt.tick_params(axis='both', colors='white')
+    
+    # Cambiar el fondo de la figura a negro
+    plt.gcf().set_facecolor('#0E1117')
+    
+    # Mostrar el gráfico en Streamlit
+    st.pyplot(plt)
 
-    return gdp_df
-
-gdp_df = get_gdp_data()
-
-
-# SECTIONS
-tab = st.sidebar.radio("Select a section", ["Main","Section 1"])
-
-# Mostrar contenido en función de la pestaña seleccionada
-if tab == "Section 1":
-    section1.show()
-elif tab == "Main":
-        
-
-    # -----------------------------------------------------------------------------
-    # Draw the actual page
-
-    # Set the title that appears at the top of the page.
-    '''
-    # ⚕️ HIV PROJECT
-
-    This is a description of what our project are pretending to solve
-    This is a description of what our project are pretending to solve
-    This is a description of what our project are pretending to solve
-    This is a description of what our project are pretending to solve
-    '''
-
-    # Add some spacing
-    ''
-    ''
-
-    min_value = gdp_df['Year'].min()
-    max_value = gdp_df['Year'].max()
-
-    from_year, to_year = st.slider(
-        'Which years are you interested in?',
-        min_value=min_value,
-        max_value=max_value,
-        value=[min_value, max_value])
-
-    countries = gdp_df['Country Code'].unique()
-
-    if not len(countries):
-        st.warning("Select at least one country")
-
-    selected_countries = st.multiselect(
-        'Which countries would you like to view?',
-        countries,
-        ['DEU', 'FRA', 'GBR', 'BRA', 'MEX', 'JPN'])
-
-    ''
-    ''
-    ''
-
-    # Filter the data
-    filtered_gdp_df = gdp_df[
-        (gdp_df['Country Code'].isin(selected_countries))
-        & (gdp_df['Year'] <= to_year)
-        & (from_year <= gdp_df['Year'])
-    ]
-
-    st.header('GDP over time', divider='gray')
-
-    ''
-
-    st.line_chart(
-        filtered_gdp_df,
-        x='Year',
-        y='GDP',
-        color='Country Code',
-    )
-
-    ''
-    ''
+# Llamada a la función con los datos filtrados
+plot_correlation_scatter2(
+    df_filtered, 
+    x_col="weighted_No_Work", 
+    y_col="Deaths", 
+    title=f"Correlation between Deaths and Unemployment ({year_option})", 
+    x_label="People without Work (weighted_No_Work)", 
+    y_label="Number of Deaths (Deaths)"
+)
 
 
-    first_year = gdp_df[gdp_df['Year'] == from_year]
-    last_year = gdp_df[gdp_df['Year'] == to_year]
-
-    st.header(f'GDP in {to_year}', divider='gray')
-
-    ''
-
-    cols = st.columns(4)
-
-    for i, country in enumerate(selected_countries):
-        col = cols[i % len(cols)]
-
-        with col:
-            first_gdp = first_year[first_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-            last_gdp = last_year[last_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-
-            if math.isnan(first_gdp):
-                growth = 'n/a'
-                delta_color = 'off'
-            else:
-                growth = f'{last_gdp / first_gdp:,.2f}x'
-                delta_color = 'normal'
-
-            st.metric(
-                label=f'{country} GDP',
-                value=f'{last_gdp:,.0f}B',
-                delta=growth,
-                delta_color=delta_color
-            )
