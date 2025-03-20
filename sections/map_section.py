@@ -104,7 +104,6 @@ def show_map(df_filtered):
             folium_static(m, width=850, height=500)
         except Exception as e:
             st.error(f"Error creating map: {e}")
-            st.error("This might be due to mismatches between borough names in your data and GeoJSON.")
 
             if 'features' in nyc_geojson:
                     borough_names_geojson = [feature['properties'].get('name', 'Unknown') for feature in nyc_geojson['features']]
