@@ -33,6 +33,21 @@ By examining HIV diagnosis rates alongside poverty indicators, we aim to identif
 '''
 ''
 ''
+st.text("This project analyzes the relationship between HIV prevalence and socioeconomic status in New York City.")
+
+col1, col2 = st.columns(2,  border=True)
+with col1:
+    st.subheader("HIV y socioeconomics")
+    st.image(image="images/data_sources.png", width=660)
+    st.text("Data sources from New York. Poverty data includes Unemployment, Poverty, and Deaths, while HIV data covers HIV cases, Viral Suppression, and AIDS.")
+with col2:
+    st.subheader("Communities")
+    st.image(image="images/comunities.png", width=345)
+    st.text("The study cases are Demographic Groups, we called them communities. Communities are defined by Year, Boroughs, Age, Sex, Race")
+
+
+
+
 st.header("Do the socioeconomic factors of NYC communities influence the prevalence of HIV and its associated consequences?")
 year_option = st.selectbox(
     'Select Year', 
