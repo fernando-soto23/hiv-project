@@ -5,6 +5,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 import altair as alt
+import os
+from sections.map_section import show_map
 
 st.set_page_config(
     page_title='HIV Project Dashboard',
@@ -145,3 +147,5 @@ with col1:
     st.divider()
     plot_top_poverty_communities(df_filtered)
     st.info("Out of the 10 most poverty communities, none are of White race.", icon="🚨")
+
+show_map(df_filtered)
