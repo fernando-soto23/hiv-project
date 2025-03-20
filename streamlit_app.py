@@ -26,13 +26,12 @@ df_hiv_poverty = get_df_data()
 '''
 # :drop_of_blood: HIV PROJECT
 
-This is a description of what our project are pretending to solve
-This is a description of what our project are pretending to solve
-This is a description of what our project are pretending to solve
-This is a description of what our project are pretending to solve
+This project analyzes the relationship between socioeconomic status and HIV prevalence in New York City.
+By examining HIV diagnosis rates alongside poverty indicators, we aim to identify potential correlations and disparities across boroughs, age groups, genders, and racial demographics.
 '''
 ''
 ''
+st.header("Do the socioeconomic factors of NYC communities influence the prevalence of HIV and its associated consequences?")
 year_option = st.selectbox(
     'Select Year', 
     options=[2017, 2018], 
@@ -40,8 +39,9 @@ year_option = st.selectbox(
 )
 ''
 ''
+
 df_filtered = df_hiv_poverty[df_hiv_poverty['Year'] == year_option]
-st.header("Is there a correlation between poverty and vulneravility?")
+st.subheader("Is there a correlation between poverty and vulneravility?")
 ''
 
 col1, col2 = st.columns(2,  border=True)
@@ -105,11 +105,11 @@ with col2:
     )
     col2.info('Communities facing higher poverty levels may struggle more with achieving viral suppression, which could be due to limited access to healthcare, medication, or support.', icon="ℹ️")
 
-st.header("Which communities are most vulnerable?")
+st.subheader("Which communities are most vulnerable?")
 
 def plot_top_aids_communities(df):
     top_5 = df.sort_values(by="AIDS diagnoses", ascending=False).head(10).copy()
-    top_5["Community"] = top_5[['Year', 'Borough', 'Gender', 'Age', 'Race']].astype(str).agg(' | '.join, axis=1)
+    top_5["Community"] = top_5[['Borough', 'Gender', 'Age', 'Race']].astype(str).agg(' | '.join, axis=1)
     chart_data = top_5[["Community", "AIDS diagnoses"]]
 
     chart = alt.Chart(chart_data).mark_bar().encode(
@@ -124,7 +124,7 @@ def plot_top_aids_communities(df):
 
 def plot_top_poverty_communities(df):
     top_5 = df.sort_values(by="poverty_rate", ascending=False).head(10).copy()
-    top_5["Community"] = top_5[['Year', 'Borough', 'Gender', 'Age', 'Race']].astype(str).agg(' | '.join, axis=1)
+    top_5["Community"] = top_5[['Borough', 'Gender', 'Age', 'Race']].astype(str).agg(' | '.join, axis=1)
     chart_data = top_5[["Community", "poverty_rate"]]
 
     chart = alt.Chart(chart_data).mark_bar().encode(
