@@ -18,7 +18,7 @@ def load_geojson():
 
 def show_map(df_filtered):
     nyc_geojson = load_geojson()
-    st.header("How has HIV/AIDS distributed in NYC?")
+    st.subheader("How are HIV/AIDS and socioeconomic factors distributed in NYC?")
 
 
     map_metric = st.selectbox(
@@ -101,7 +101,7 @@ def show_map(df_filtered):
                             popup=popup
                         ).add_to(m)
 
-            folium_static(m, width=850, height=500)
+            folium_static(m, width=1250, height=500)
         except Exception as e:
             st.error(f"Error creating map: {e}")
 

@@ -28,11 +28,11 @@ df_hiv_poverty = get_df_data()
 '''
 # :drop_of_blood: HIV PROJECT
 
+
+
 This project analyzes the relationship between socioeconomic status and HIV prevalence in New York City.
 By examining HIV diagnosis rates alongside poverty indicators, we aim to identify potential correlations and disparities across boroughs, age groups, genders, and racial demographics.
 '''
-''
-''
 st.text("This project analyzes the relationship between HIV prevalence and socioeconomic status in New York City.")
 
 col1, col2 = st.columns(2,  border=True)
@@ -47,7 +47,8 @@ with col2:
 
 
 
-
+''
+''
 st.header("Do the socioeconomic factors of NYC communities influence the prevalence of HIV and its associated consequences?")
 year_option = st.selectbox(
     'Select Year', 
@@ -164,3 +165,7 @@ with col1:
     st.info("Out of the 10 most poverty communities, none are of White race.", icon="🚨")
 
 show_map(df_filtered)
+
+''
+''
+st.text("© 2025 Thoughtworks")
